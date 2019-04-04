@@ -7,14 +7,14 @@
             <field name="model">payment.acquirer</field>
             <field name="inherit_id" ref="payment.acquirer_form"/>
             <field name="arch" type="xml">
-                <xpath expr='//group[@name="acquirer_display"]' position='after'>
+                <xpath expr='//group[@name="acquirer"]' position='after'>
                     <group attrs="{'invisible': [('provider', '!=', 'remita')]}">
-                        <field name="merchantId"/>
-                        <field name="serviceTypeId"/>
-                        <field name="apikey"/>
+                        <field name="merchant_id"/>
+                        <field name="service_type_id"/>
+                        <field name="api_key"/>
                     </group>
                 </xpath>
-                
+
             </field>
         </record>
 

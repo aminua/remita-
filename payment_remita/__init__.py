@@ -21,5 +21,3 @@
 
 import models
 import controllers
-import controllers2
-

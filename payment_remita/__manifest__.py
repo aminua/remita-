@@ -12,6 +12,7 @@
         'views/remita.xml',
         'views/payment_acquirer.xml',
         'data/remita.xml',
+        'templates/payment_templates.xml',
     ],
     'installable': True,
 }

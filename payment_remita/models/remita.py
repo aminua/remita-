@@ -3,11 +3,9 @@ from hashlib import sha512
 import logging
 import urlparse
 
-from odoo.addons.payment.models.payment_acquirer import ValidationError
-from odoo.addons.payment_remita.controllers.main import RemitaController
 from odoo import models, fields
+from odoo.exceptions import ValidationError
 from odoo.tools import float_round
-
 
 _logger = logging.getLogger(__name__)
 
@@ -19,23 +17,17 @@ class AcquirerRemita(models.Model):
         """remita URLs"""
         if environment == 'prod':
             return {
-                'remita_form_url': 'http://www.remitademo.net/remita/ecomm/init.reg',
-                'remita_rest_url': 'https://login.remita.net/remita/ecomm',
+                'remita_get_rrr': "/get_rrr/remita",
             }
         else:
             return {
-               'remita_form_url': 'http://www.remitademo.net/remita/ecomm/init.reg',
-               'remita_rest_url': 'http://www.remitademo.net/remita/ecomm',
+               'remita_get_rrr': "/get_rrr/remita",
             }
 
-    def _get_providers(self):
-        providers = super(AcquirerRemita, self)._get_providers()
-        providers.append(['remita', 'Remita'])
-        return providers
-
-    merchantId = fields.Char('Merchant Id', required_if_provider='remita'),
-    serviceTypeId = fields.Char('service Type Id', required_if_provider='remita'),
-    apikey = fields.Char('API KEY', required_if_provider='remita'),
+    provider = fields.Selection(selection_add=[('remita', "Remita")])
+    merchant_id = fields.Char('Merchant Id')
+    service_type_id = fields.Char('service Type Id')
+    api_key = fields.Char('API KEY')
 
     def _remita_generate_digital_sign(self, acquirer, inout, values):
         """ Generate the shasign for incoming or outgoing communications.
@@ -52,9 +44,9 @@ class AcquirerRemita(models.Model):
         assert acquirer.provider == 'remita'
 
         if inout == 'in':
-            keys = "aaaaaamerchantId aaaaaserviceTypeId aaaaorderId aaamountt aaresponseurl api_key"
+            keys = "merchant_id service_type_id order_id total_amount response_url api_key"
         else:
-            keys = "aaaproduct_id aapay_item_id webpay_mac_key"
+            keys = "product_id pay_item_id webpay_mac_key"
 
         def get_value(key):
             if values.get(key):
@@ -67,27 +59,30 @@ class AcquirerRemita(models.Model):
            shasign = sha512(sign).hexdigest()
         return shasign
 
-    def remita_form_generate_values(self, partner_values, tx_values):
-        base_url = self.pool['ir.config_parameter'].get_param('web.base.url')
+    def remita_form_generate_values(self, values=None):
+        if not values:
+            values = {}
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
         acquirer = self
-        remita_tx_values = dict(tx_values)
-        temp_remita_tx_values = {
-            'aaaatxn_ref':  tx_values['reference'],
-            'aaaaaamerchantId': acquirer.merchantId,
-            'aaaaaserviceTypeId': acquirer.serviceTypeId,
-            'aaamountt': '%d' % int(float_round(tx_values['amount'], 2)),
-            'aaresponseurl': '%s' % urlparse.urljoin(base_url, RemitaController._cp_path),
-            'api_key': acquirer.apikey,
+        if not isinstance(values, dict):
+            values = dict(values)
+        remita_values = {
+            'txn_ref':  values['reference'],
+            'merchant_id': acquirer.merchant_id,
+            'service_type_id': acquirer.service_type_id,
+            'total_amount': '%d' % int(float_round(values['amount'], 2)),
+            'response_url': '%s' % urlparse.urljoin(base_url, '/get_rrr/remita'),
+            'api_key': acquirer.api_key,
         }
-        if remita_tx_values.get('return_url'):
-           shasign = self._remita_generate_digital_sign(acquirer, 'in', temp_remita_tx_values)
-        temp_remita_tx_values['SHASIGN'] = shasign
-        remita_tx_values.update(temp_remita_tx_values)
-        return partner_values, remita_tx_values
+        if values.get('return_url'):
+            shasign = self._remita_generate_digital_sign(acquirer, 'in', remita_values)
+            remita_values['SHASIGN'] = shasign
+        values.update(remita_values)
+        return values
 
-    def remita_get_form_action_url(self, cr, uid, id, context=None):
+    def remita_get_form_action_url(self):
         acquirer = self
-        return self._get_remita_urls(acquirer.environment)['remita_form_url']
+        return self._get_remita_urls(acquirer.environment)['remita_get_rrr']
    
 
 class TxRemita(models.Model):

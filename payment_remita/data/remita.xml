@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="payment_acquirer_remita" model="payment.acquirer">
             <field name="name">Remita</field>
@@ -10,11 +10,11 @@
             <field name="environment">test</field>
             <field name="pre_msg">
                 <![CDATA[
-                <p>You will be redirected to the Remita website after cliking on the payment button.</p>]]>
+                <p>You will be redirected to the Remita website after clicking on the payment button.</p>]]>
             </field>
-            <field name="merchantId">2547916</field>
-            <field name="serviceTypeId">4430731</field>
-            <field name="apikey">1946</field> 
+            <field name="merchant_id">2547916</field>
+            <field name="service_type_id">4430731</field>
+            <field name="api_key">1946</field>
         </record>
 
     </data>
