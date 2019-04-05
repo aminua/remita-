@@ -9,11 +9,11 @@
 					    border: 2px solid black !important;
 					    border-collapse: collapse;
 					}
-<!--					th[scope=col] {-->
-<!--					    -webkit-transform: rotate(-90deg);-->
-<!--					    padding-top:100px;-->
-<!--					    text-align:left;-->
-<!--					}-->
+					div[scope=col] {
+					    -webkit-transform: rotate(-90deg);
+					    padding-top:100px;
+					    text-align:left;
+					}
 				</style>
 
 				<div class="row mt16 mb16" style="text-align:center; text-transform: uppercase;">
@@ -26,9 +26,10 @@
 					<div class="col-xs-8">Checked and passed for payment at _________</div>
 				</div>
 				<br/>
+				<br/>
 
 				<div class="row">
-					<div class="col-xs-4" style="border: 1px solid #eeee">
+					<div scope="col" class="col-xs-4" style="border: 1px solid #eeee">
 						<span>For use in payment of Advances</span>
 						<span>Certified the Advance of </span>
 						<span>N _______________________</span>
@@ -38,84 +39,120 @@
 						<span>Name in block letters</span>
 					</div>
 					<div class="col-xs-6" style="background-color: #568eff; border: 1px solid #568eff; color: #fff">
-						<div class="row col-xs-7">
-							<div>Data Type <br/> VOI</div>
-							<div>Sources <br/> . </div>
-							<div>Voucher Number <br/> REXI </div>
+						<div class="row">
+							<div>
+								<div class="col-xs-8">
+									<table>
+									<tr>
+										<th>Data Type</th>
+										<th>Sources</th>
+										<th>Voucher No.</th>
+									</tr>
+									<tr>
+										<td>.</td>
+										<td>.</td>
+										<td>.</td>
+									</tr>
+									</table>
+								</div>
+								<div class="col-xs-4">
+									<table>
+										<tr>
+											<th colspan="2">Station</th>
+										</tr>
+										<tr>
+											<td>Head</td>
+											<td>'head'</td>
+										</tr>
+										<tr>
+											<td>S/Head</td>
+											<td>'shead'</td>
+										</tr>
+									</table>
+								</div>
+							</div>
 						</div>
-						<div class="col-xs-6" style="background-color:#568eff; border: 1px solid #568eff; text-align: center; color: #fff">
-							Classification Code
-						</div>
-
 					</div>
 				</div>
-
+				<br/>
+				<br/>
 				<br/>
 				<!-- Payee's Details Row -->
 				<div class="row">
-					<div class="col-xs-8" style="border-left:1px solid #568eff;">
+					<div>
 						<div class="col-xs-3">Payee</div><div class="col-xs-7"><u>Name of the payee</u></div>
 					</div>
-					<div class="col-xs-8" style="border-left:1px solid #568eff;">
+					<div>
 						<div class="col-xs-3">Address</div><div class="col-xs-7"><u>Address of the payee</u></div>
 					</div>
 				</div>
 				<br/>
 
-				<!-- Service Description -->
-				<!-- First row -->
 				<div class="row">
-					<div class="col-xs-1" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">Date</div>
-					<div class="col-xs-8" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">Detailed Description of
-						Service / Work</div>
-					<div class="col-xs-1" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">Rate</div>
-					<div class="col-xs-1" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">=N=</div>
-					<div class="col-xs-1" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">K</div>
+					<table style="padding:0;margin-top:0;margin-bottom:0;">
+						<thead>
+							<tr>
+								<th class="col-xs-1">Date</th>
+								<th class="col-xs-8">Detailed description of Service / Work</th>
+								<th class="col-xs-1">Rate</th>
+								<th class="col-xs-1">=N=</th>
+								<th class="col-xs-1">K</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="col-xs-1">11/12/2019</td>
+								<td class="col-xs-8">Item 1</td>
+								<td class="col-xs-1">100/piece</td>
+								<td class="col-xs-1">100</td>
+								<td class="col-xs-1">00</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 
-				<!--Second row-->
 				<div class="row">
-					<div class="col-xs-1" style="border-left:1px solid #568eff;">1.</div>
-					<div class="col-xs-8" style="border-left:1px solid #568eff;">Line 1 Item Description</div>
-					<div class="col-xs-1" style="border-left:1px solid #568eff;">100</div>
-					<div class="col-xs-1" style="border-left:1px solid #568eff;">1</div>
-					<div class="col-xs-1" style="border-left:1px solid #568eff;border-right:1px solid #568eff;">100</div>
-				</div>
-
-				<!-- Third Table row -->
-				<div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-					<div class="col-xs-8 col-xs-offset-1" >Checked and insert amount
-						in words<br/>Passed for</div>
-					<div class="col-xs-3">Total =N=</div>
-				</div>
-
-				<!-- Certificate Section -->
-				<div class="row">
-					<div class="col-xs-6" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-						Payable at __________________________<br/>
-						Signature ___________________________<br/>
-						Name in Block Letters _______________<br/>
-						Station ____________ Date _____________<br/>
-						Paying Officers_______________________<br/>
-						Signature______________________________<br/>
-						Autly, AIE No. etc.____________________
-					</div>
-					<div class="col-xs-6">
-						<h5 style="text-transform: uppercase; text-align: center;">certificate</h5>
-						<p>
-							I certify the amount above is correct and incurred under the authority quoted; that the service have been daily performed;
-							that the rate / price charged is according to regulations / contracts is fair and reasonable.
-						</p>
-						<p>
-							That the amount of ............................  Naira ................................. Kobo may be paid under the Classification quoted.
-						</p>
-						<ul style="list-style-type: none; padding-left: 0">
-							<li>Signature: ..............................................</li>
-							<li>Place: ..................................................</li>
-							<li>Date: ...................................................</li>
-							<li>Designation: ............................................</li>
-						</ul>
-					</div>
+					<table style="border:0px">
+						<tr>
+							<td class="col-xs-5">
+								<div class="w-100">Payable at __________________________</div>
+								<div class="w-100">Signature ___________________________</div>
+								<div class="w-100">Name in Block Letters _______________</div>
+								<div class="w-100">Station ____________ Date ___________</div>
+								<div class="w-100">Paying Officers______________________</div>
+								<div class="w-100">Signature____________________________</div>
+								<div class="w-100">Autly, AIE No. etc.__________________</div>
+							</td>
+							<td class="col-xs-7" id="notes">
+								<div><h5 style="text-transform: uppercase; text-align: center;">certificate</h5></div>
+								<div>
+									I certify the amount above is correct and incurred under the authority quoted;
+									that the service have been daily performed; that the rate / price charged is
+									according to regulations / contracts is fair and reasonable.
+								</div>
+								<div>
+									That the amount of ............. Naira ............. Kobo may be paid under the Classification quoted.
+								</div>
+								<div class="row">
+									<div style="text-align:right">________________________</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-3 col-xs-offset-9">Signature</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										Place
+									</div>
+									<div class="col-xs-6">
+										Date
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-8">Designation _______________</div>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 
 				<br/>
