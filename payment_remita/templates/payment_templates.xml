@@ -1,44 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="pay_rrr_notification">
+
+        <template id="pay_rrr">
             <t t-call="website.layout">
-                <t t-set="title">Transaction Status</t>
+                <t t-set="title">Remita Pay</t>
                 <div class="oe_structure">
                     <div class="container">
-                        <div id="header">
-                            <h1>{{company}}</h1>
-                            <a href="http://198.23.62.95:8069">Back Home</a>
-                        </div>
-                        <div id="section">
-                            <h2>Transaction Status</h2>
-                        </div>
-                        <div style="width:800px; margin:0 auto; background-color:green; color:white; text-align:center;">
-                            <h3>Thank You!!!</h3>
-                            <p>Your Transaction Was Successful</p>
-                            <p>Reason: ${description}</p>
-                            <p>orderId: ${orderId}</p>
-                            <p>RRR: ${paymentreference}</p>
-                            <p>Thank You For Trusting {{company}}.</p>
+                        <div style="margin: 10px;">
+                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                <h4 class="text-danger" t-esc="err" />
+                            </t>
+                            <form id="formRemitaPay" t-att-action="form_values.get('form_action')" method="post" style="padding: 10px auto;">
+                                <div class="col-xs-4">
+                                    <div>
+                                        <label>RRR</label>
+                                        <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" />
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <label>Response URL</label>
+                                        <input type="text" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <label>Merchant Id</label>
+                                        <input type="text" name="merchantId" t-att-value="form_values.get('merchant_id')" />
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <label>Hash Value</label>
+                                        <input type="text" name="hash" t-att-value="form_values.get('hash') or ''" />
+                                    </div>
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                    <br/>
+                                    <t t-if="'not error'">
+                                        <div class="text-right">
+                                              <input type="submit" value="Pay Via Remita" class="text-right"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </t>
         </template>
 
-        <template id="pay_rrr">
-            <t t-call="website.layout">
-                <t t-set="title">Picker Packer | Orders</t>
-                <div class="oe_structure">
-                    <div class="container">
-                        <form id="Form1" action="/notification/listener" method="post">
-                            RRR: <input type="text" name="RRR"/><br/>
-                            <input type="hidden" name="SubmitCheck" value="sent"/>
-                            <input type="Submit" name="Form1_Submit" value="Submit"/>
-                        </form>
-                    </div>
-                </div>
-            </t>
-        </template>
+<!--        <template id="pay_rrr_notification">-->
+<!--            <t t-call="website.layout">-->
+<!--                <t t-set="title">Transaction Status</t>-->
+<!--                <div class="oe_structure">-->
+<!--                    <div class="container">-->
+<!--                        <div id="header">-->
+<!--                            <h1>{{company}}</h1>-->
+<!--                            <a href="http://198.23.62.95:8069">Back Home</a>-->
+<!--                        </div>-->
+<!--                        <div id="section">-->
+<!--                            <h2>Transaction Status</h2>-->
+<!--                        </div>-->
+<!--                        <div style="width:800px; margin:0 auto; background-color:green; color:white; text-align:center;">-->
+<!--                            <h3>Thank You!!!</h3>-->
+<!--                            <p>Your Transaction Was Successful</p>-->
+<!--                            <p>Reason: ${description}</p>-->
+<!--                            <p>orderId: ${orderId}</p>-->
+<!--                            <p>RRR: ${paymentreference}</p>-->
+<!--                            <p>Thank You For Trusting {{company}}.</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </template>-->
     </data>
 </odoo>

@@ -4,12 +4,16 @@
 
         <template id="remita_acquirer_button">
             <form t-if="acquirer.api_key" t-att-action="tx_url" method="post" target="_self">
-                <input type="text" name="tx_url" t-att-data-action-url="tx_url"/>
                 <input type="text" name="merchantId" t-att-value="merchant_id"/>
                 <input type="text" name="serviceTypeId" t-att-value="service_type_id"/>
-                <input type="text" name="amt" t-att-value="aaamountt or '0.0'"/>
-                <input type='text' name='responseurl' t-att-value="aaresponseurl"/>
+                <input type="text" name="totalAmount" t-att-value="total_amount or '0.0'"/>
+                <input type='text' name='responseurl' t-att-value="response_url"/>
+                <input type="text" name="orderId" t-att-value="txn_ref"/>
+                <input type="text" name="payerName" t-att-value="partner_name"/>
+                <input type="text" name="payerEmail" t-att-value="partner_email"/>
+                <input type="text" name="payerPhone" t-att-value="partner_phone"/>
                 <input type="text" name="hash" t-att-value="SHASIGN"/>
+                <input type="text" name="apiKey" t-att-value="api_key"/>
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <!-- submit -->
                 <button type="submit" width="100px" t-att-class="submit_class">
@@ -18,26 +22,5 @@
                 </button>
             </form>
         </template>
-
-<!--        <template id="remita_acquirer_button">-->
-<!--            <form t-if="acquirer.apikey" t-att-data-action-url="tx_url" t-att-method="post">-->
-<!--                <input type="text" name="merchantId" t-att-value="aaaaaamerchantId"/>-->
-<!--                <input type="text" name="serviceTypeId" t-att-value="aaaaaserviceTypeId"/>-->
-<!--                <input type="text" name="amt" t-att-value="aaamountt or '0.0'"/>-->
-<!--                <input t-if="aaresponseurl" type='text' name='responseurl' t-att-value="aaresponseurl"/>-->
-<!--                <input type="text" name="hash" t-att-value="SHASIGN"/>-->
-<!--&lt;!&ndash;                <input type="text" name="payerName" t-att-value="partner_values['first_name']"/>&ndash;&gt;-->
-<!--                <input type="text" name="paymenttype" t-att-value="'VERVE'"/>-->
-<!--&lt;!&ndash;                <input type="hidden" name="payerEmail" t-att-value="partner_values['email']"/>&ndash;&gt;-->
-<!--                <input type="text" name="orderId" t-att-value="aaaatxn_ref"/>-->
-
-<!--                &lt;!&ndash; submit &ndash;&gt;-->
-<!--                <button type="submit" width="100px" t-att-class="submit_class">-->
-<!--                    <img t-if="not submit_txt" src="/payment_remita/static/src/img/remita-payment-logo-vertical.png"/>-->
-<!--                    <span t-if="submit_txt"><t t-esc="submit_txt"/><span class="fa fa-long-arrow-right"/></span>-->
-<!--                </button>-->
-<!--            </form>-->
-<!--        </template>-->
-
     </data>
 </odoo>

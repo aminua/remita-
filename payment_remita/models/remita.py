@@ -2,8 +2,9 @@
 from hashlib import sha512
 import logging
 import urlparse
+import requests
 
-from odoo import models, fields
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.tools import float_round
 
@@ -18,10 +19,14 @@ class AcquirerRemita(models.Model):
         if environment == 'prod':
             return {
                 'remita_get_rrr': "/get_rrr/remita",
+                'remita_pay_rrr': "https://remitademo.net/remita/ecomm/finalize.reg",
+                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
             }
         else:
             return {
-               'remita_get_rrr': "/get_rrr/remita",
+                'remita_get_rrr': "/get_rrr/remita",
+                'remita_pay_rrr': "https://remita.net/remita/ecomm/finalize.reg",
+                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
             }
 
     provider = fields.Selection(selection_add=[('remita', "Remita")])
@@ -89,18 +94,19 @@ class TxRemita(models.Model):
     _inherit = 'payment.transaction'
 
     # Remita status
-    _buckaroo_valid_tx_status = [00, 01]    
-    _buckaroo_pending_tx_status = [021, 020, 025, 040]    
-    _buckaroo_cancel_tx_status = [012, 61]    
-    _buckaroo_error_tx_status = [022, 02, 022, 023 , 031, 032, 19, 20, 26, 27]    
-    _buckaroo_reject_tx_status = [030, 999]
+    _buckaroo_valid_tx_status = ['00', '01']
+    _buckaroo_pending_tx_status = ['021', '020', '025', '040']
+    _buckaroo_cancel_tx_status = ['012', '61']
+    _buckaroo_error_tx_status = ['022', '02', '022', '023', '031', '032', '19', '20', '26', '27']
+    _buckaroo_reject_tx_status = ['030', '999']
 
     remita_txnid = fields.Char('Remita Retrieval Reference')
 
     # --------------------------------------------------
     # FORM RELATED METHODS
     # --------------------------------------------------
-    
+
+    @api.model
     def _remita_form_get_tx_from_data(self, data):
         reference = data.get('orderID')
         if not reference:
@@ -108,7 +114,6 @@ class TxRemita(models.Model):
             _logger.error(error_msg)
             raise ValidationError(error_msg)
 
-        # find tx -> @TDENOTE use txn_id ?
         tx_ids = self.env['payment.transaction'].search([('reference', '=', reference)])
         if not tx_ids or len(tx_ids) > 1:
             error_msg = 'Remita: received data for reference %s' % reference
@@ -118,32 +123,87 @@ class TxRemita(models.Model):
                 error_msg += '; multiple order found'
             _logger.error(error_msg)
             raise ValidationError(error_msg)
-        return self.browse(tx_ids[0])
+        return tx_ids
 
-    def _remita_form_validate(self, tx, data):
-        status = data.get('responseStatus')
-        data = {
-            'remita_txnid': data.get('RRR'),
+    @api.multi
+    def _remita_form_validate(self, data):
+        status = data.get('status')
+        transaction_status = {
+            'success': {
+                'state': 'done',
+                'acquirer_reference': data.get('remita'),
+                'date_validate': fields.Datetime.now(),
+            },
+            'pending': {
+                'state': 'pending',
+                'acquirer_reference': data.get('remita'),
+                'date_validate': fields.Datetime.now(),
+            },
+            'failure': {
+                'state': 'cancel',
+                'acquirer_reference': data.get('remita'),
+                'date_validate': fields.Datetime.now(),
+            },
+            'error': {
+                'state': 'error',
+                'state_message': data.get('error_Message') or _('Remita: feedback error'),
+                'acquirer_reference': data.get('remita'),
+                'date_validate': fields.Datetime.now(),
+            }
         }
-        if status in ['SUCCESS', 'Completed', 'Processed']:
-            _logger.info('Validated Remita payment for tx %s: set as done' % tx.reference)
-            data.update(state='done', date_validate=data.get('udpate_time', fields.datetime.now()),
-                        state_message=data.get('statusMessage', ''))
-            return tx.write(data)
-        elif status in ['Pending', 'Expired']:
-            _logger.info('Received notification for Remita payment %s: set as pending' % tx.reference)
-            data.update(state='pending', state_message=data.get('statusMessage', ''))
-            return tx.write(data)
-        else:
-            error = 'Received unrecognized status for Remita payment %s: %s, set as error' % (tx.reference, status)
-            _logger.info(error)
-            data.update(state='error', state_message=error)
-            return tx.write(data)
+        vals = transaction_status.get(status, False)
+        if not vals:
+            vals = transaction_status['error']
+            _logger.info(vals['state_message'])
+        return self.write(vals)
 
-    def open_requery(self):
-        url = "/notification"
-        return {
-            'type': 'ir.actions.act_url',
-            'url': url,
-            'target': 'new'
-        }
+    @api.multi
+    def _get_transaction_status(self, data):
+
+        """Return the transaction status for OrderId or RRR returned from Remita payment page.
+
+        ...
+        With the response from the get request to status check endpoint, compute the status of a particular transaction
+        and return the right status
+
+        """
+        rrr = data.get('RRR', False)
+        orderID = data.get('orderID', False)
+
+        # get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg"
+        merchantId = '2547916'
+        apiKey = '1946'
+
+        hash_str = sha512(orderID + merchantId + apiKey).hexdigest()
+
+        get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{orderID}/{hash}/orderstatus.reg".format(
+            merchantId=merchantId,
+            orderID=orderID,
+            hash=hash_str
+        )
+
+        response = requests.get(get_status_url)
+        response = response.json()
+        print("&&&&&", response.get('status'), int(response.get('status')))
+
+        if response.get('status') in self._buckaroo_valid_tx_status:
+            data.update({
+                'status': 'success',
+                'remita': 'Remita'
+            })
+        if response.get('status') in self._buckaroo_reject_tx_status:
+            data.update({
+                'status': 'failure',
+                'remita': 'Remita'
+            })
+        if response.get('status') in self._buckaroo_error_tx_status:
+            data.update({
+                'status': 'error',
+                'remita': 'Remita'
+            })
+        if response.get('status') in self._buckaroo_pending_tx_status:
+            data.update({
+                'status': 'pending',
+                'remita': 'Remita'
+            })
+        return data
