@@ -148,4 +148,4 @@ class RemitaPayment(http.Controller):
         data = request.env['payment.transaction']._get_transaction_status(post)
 
         request.env['payment.transaction'].sudo().form_feedback(data, 'remita')
-        return werkzeug.utils.redirect('/')
+        return werkzeug.utils.redirect('/shop/payment/validate')

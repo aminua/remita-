@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hashlib import sha512
+import hashlib
 import logging
 import urlparse
 import requests
@@ -49,19 +49,12 @@ class AcquirerRemita(models.Model):
         assert acquirer.provider == 'remita'
 
         if inout == 'in':
-            keys = "merchant_id service_type_id order_id total_amount response_url api_key"
+            keys = "merchant_id service_type_id order_id total_amount response_url api_key".split(" ")
+            sign = ''.join('%s' % (values.get(k)) for k in keys)
         else:
             keys = "product_id pay_item_id webpay_mac_key"
-
-        def get_value(key):
-            if values.get(key):
-                return values[key]
-            return ''
-
-        if acquirer.provider == 'remita':
-           items = sorted((k.upper(), v) for k, v in values.items())
-           sign = ''.join(str(v) for k, v in items)
-           shasign = sha512(sign).hexdigest()
+            sign = ''.join('%s' % (values.get(k, '')) for k in keys)
+        shasign = hashlib.sha512(sign).hexdigest()
         return shasign
 
     def remita_form_generate_values(self, values=None):
@@ -79,9 +72,8 @@ class AcquirerRemita(models.Model):
             'response_url': '%s' % urlparse.urljoin(base_url, '/get_rrr/remita'),
             'api_key': acquirer.api_key,
         }
-        if values.get('return_url'):
-            shasign = self._remita_generate_digital_sign(acquirer, 'in', remita_values)
-            remita_values['SHASIGN'] = shasign
+        shasign = self._remita_generate_digital_sign(acquirer, 'in', remita_values)
+        remita_values['SHASIGN'] = shasign
         values.update(remita_values)
         return values
 
@@ -174,11 +166,11 @@ class TxRemita(models.Model):
         merchantId = '2547916'
         apiKey = '1946'
 
-        hash_str = sha512(orderID + merchantId + apiKey).hexdigest()
+        hash_str = hashlib.sha512(rrr + apiKey + merchantId).hexdigest()
 
-        get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{orderID}/{hash}/orderstatus.reg".format(
+        get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{RRR}/{hash}/orderstatus.reg".format(
             merchantId=merchantId,
-            orderID=orderID,
+            RRR=rrr,
             hash=hash_str
         )
 
