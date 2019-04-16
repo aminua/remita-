@@ -95,7 +95,6 @@ class RemitaPayment(http.Controller):
                 url = 'https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit'
                 hash_string = post.get('merchantId') + post.get('serviceTypeId') + post.get('orderId') + post.get('totalAmount') + post.get('apiKey')
                 api_hash = hashlib.sha512(hash_string).hexdigest()
-                # api_hash = post.get("hash")
                 headers = {
                     'Content-Type': 'application/json',
                     'Authorization': "remitaConsumerKey=" + post.get('merchantId') + ",remitaConsumerToken=" + api_hash

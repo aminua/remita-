@@ -3,8 +3,7 @@
     <data noupdate="0">
 
         <template id="remita_acquirer_button">
-<!--            <form t-if="acquirer.api_key" t-att-action="tx_url" method="post" target="_self">-->
-            <form t-if="acquirer.api_key" t-att-action="" method="post" target="_self">
+            <form t-if="acquirer.api_key" t-att-action="tx_url" method="post" target="_self">
                 <input type="hidden" name="merchantId" t-att-value="merchant_id"/>
                 <input type="hidden" name="serviceTypeId" t-att-value="service_type_id"/>
                 <input type="hidden" name="totalAmount" t-att-value="total_amount or '0.0'"/>

@@ -159,25 +159,17 @@ class TxRemita(models.Model):
         and return the right status
 
         """
-        rrr = data.get('RRR', False)
-        orderID = data.get('orderID', False)
-
-        # get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg"
-        merchantId = '2547916'
-        apiKey = '1946'
-
+        rrr = str(data.get('RRR'))
+        merchantId = "2547916"
+        apiKey = "1946"
         hash_str = hashlib.sha512(rrr + apiKey + merchantId).hexdigest()
-
-        get_status_url = "https://remitademo.net/remita/ecomm/{merchantId}/{RRR}/{hash}/orderstatus.reg".format(
-            merchantId=merchantId,
-            RRR=rrr,
-            hash=hash_str
-        )
-
-        response = requests.get(get_status_url)
+        get_status_url = "https://remitademo.net/remita/ecomm/%s/%s/%s/status.reg" % (merchantId, rrr, hash_str)
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': "remitaConsumerKey=" + merchantId + ",remitaConsumerToken=" + hash_str
+        }
+        response = requests.get(get_status_url, headers=headers)
         response = response.json()
-        print("&&&&&", response.get('status'), int(response.get('status')))
-
         if response.get('status') in self._buckaroo_valid_tx_status:
             data.update({
                 'status': 'success',

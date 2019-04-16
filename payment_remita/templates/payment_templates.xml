@@ -13,25 +13,11 @@
                             </t>
                             <form id="formRemitaPay" t-att-action="form_values.get('form_action')" method="post" style="padding: 10px auto;">
                                 <div class="col-xs-4">
-                                    <div>
-                                        <label>RRR</label>
-                                        <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" />
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <label type="hidden">Response URL</label>
-                                        <input type="hidden" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <label type="hidden">Merchant Id</label>
-                                        <input type="hidden" name="merchantId" t-att-value="form_values.get('merchant_id')" />
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <label type="hidden">Hash Value</label>
-                                        <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
-                                    </div>
+                                    <label>RRR</label>
+                                    <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" />
+                                    <input type="hidden" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
+                                    <input type="hidden" name="merchantId" t-att-value="form_values.get('merchant_id')" />
+                                    <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                                     <br/>
                                     <t t-if="'not error'">
