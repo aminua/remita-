@@ -113,7 +113,7 @@ class RemitaPayment(http.Controller):
                             name = "merchantId"
                             name = "hash"
                             name = "rrr"
-                            name = "responseurl" 
+                            name = "responseurl"
                             """
                             rrr = response.get('RRR')
                             hash_string = post.get('merchantId') + rrr + post.get('apiKey')

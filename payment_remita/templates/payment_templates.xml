@@ -19,18 +19,18 @@
                                     </div>
                                     <br/>
                                     <div>
-                                        <label>Response URL</label>
-                                        <input type="text" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
+                                        <label type="hidden">Response URL</label>
+                                        <input type="hidden" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
                                     </div>
                                     <br/>
                                     <div>
-                                        <label>Merchant Id</label>
-                                        <input type="text" name="merchantId" t-att-value="form_values.get('merchant_id')" />
+                                        <label type="hidden">Merchant Id</label>
+                                        <input type="hidden" name="merchantId" t-att-value="form_values.get('merchant_id')" />
                                     </div>
                                     <br/>
                                     <div>
-                                        <label>Hash Value</label>
-                                        <input type="text" name="hash" t-att-value="form_values.get('hash') or ''" />
+                                        <label type="hidden">Hash Value</label>
+                                        <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
                                     </div>
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                                     <br/>
