@@ -160,6 +160,7 @@ class TxRemita(models.Model):
 
         """
         rrr = str(data.get('RRR'))
+        # TDE: Get params from the configuration
         merchantId = "2547916"
         apiKey = "1946"
         hash_str = hashlib.sha512(rrr + apiKey + merchantId).hexdigest()

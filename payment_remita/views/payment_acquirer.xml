@@ -25,7 +25,6 @@
             <field name="arch" type="xml">
                 <xpath expr='//notebook' position='inside'>
                     <page string="Remita TX Details">
-                        <button name="open_requery" string="requery" type="object"/>
                         <group>
                             <field name="remita_txnid"/>
                         </group>
