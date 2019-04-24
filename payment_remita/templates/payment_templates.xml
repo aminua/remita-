@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="pay_rrr">
+            <t t-call="website.layout">
+                <t t-set="title">Remita Pay</t>
+                <div class="oe_structure">
+                    <div class="container">
+                        <div style="margin: 10px;">
+                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                <h4 class="text-danger" t-esc="err" />
+                            </t>
+                            <form id="formRemitaPay" t-att-action="form_values.get('form_action')" method="post" style="padding: 10px auto;">
+                                <div class="col-xs-4">
+                                    <label>RRR</label>
+                                    <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" />
+                                    <input type="hidden" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
+                                    <input type="hidden" name="merchantId" t-att-value="form_values.get('merchant_id')" />
+                                    <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                    <br/>
+                                    <t t-if="'not error'">
+                                        <div class="text-right">
+                                              <input type="submit" value="Pay Via Remita" class="text-right"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>
