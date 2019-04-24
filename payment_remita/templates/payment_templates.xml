@@ -33,29 +33,5 @@
             </t>
         </template>
 
-<!--        <template id="pay_rrr_notification">-->
-<!--            <t t-call="website.layout">-->
-<!--                <t t-set="title">Transaction Status</t>-->
-<!--                <div class="oe_structure">-->
-<!--                    <div class="container">-->
-<!--                        <div id="header">-->
-<!--                            <h1>{{company}}</h1>-->
-<!--                            <a href="http://198.23.62.95:8069">Back Home</a>-->
-<!--                        </div>-->
-<!--                        <div id="section">-->
-<!--                            <h2>Transaction Status</h2>-->
-<!--                        </div>-->
-<!--                        <div style="width:800px; margin:0 auto; background-color:green; color:white; text-align:center;">-->
-<!--                            <h3>Thank You!!!</h3>-->
-<!--                            <p>Your Transaction Was Successful</p>-->
-<!--                            <p>Reason: ${description}</p>-->
-<!--                            <p>orderId: ${orderId}</p>-->
-<!--                            <p>RRR: ${paymentreference}</p>-->
-<!--                            <p>Thank You For Trusting {{company}}.</p>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </t>-->
-<!--        </template>-->
     </data>
 </odoo>

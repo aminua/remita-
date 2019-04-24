@@ -4,6 +4,9 @@ import logging
 import urlparse
 import requests
 
+import calendar
+import time
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.tools import float_round
@@ -65,7 +68,7 @@ class AcquirerRemita(models.Model):
         if not isinstance(values, dict):
             values = dict(values)
         remita_values = {
-            'txn_ref':  values['reference'],
+            'txn_ref':  values['reference'] + "@" + str(calendar.timegm(time.gmtime())),
             'merchant_id': acquirer.merchant_id,
             'service_type_id': acquirer.service_type_id,
             'total_amount': '%d' % int(float_round(values['amount'], 2)),
@@ -100,7 +103,9 @@ class TxRemita(models.Model):
 
     @api.model
     def _remita_form_get_tx_from_data(self, data):
-        reference = data.get('orderID')
+        data_ref = data.get('orderID')
+        data_ref = data_ref.split("@")[0]
+        reference = data_ref
         if not reference:
             error_msg = 'Remita: received data with missing reference (%s)' % reference
             _logger.error(error_msg)
@@ -125,22 +130,26 @@ class TxRemita(models.Model):
                 'state': 'done',
                 'acquirer_reference': data.get('remita'),
                 'date_validate': fields.Datetime.now(),
+                'remita_txnid': data.get('RRR')
             },
             'pending': {
                 'state': 'pending',
                 'acquirer_reference': data.get('remita'),
                 'date_validate': fields.Datetime.now(),
+                'remita_txnid': data.get('RRR')
             },
             'failure': {
                 'state': 'cancel',
                 'acquirer_reference': data.get('remita'),
                 'date_validate': fields.Datetime.now(),
+                'remita_txnid': data.get('RRR')
             },
             'error': {
                 'state': 'error',
                 'state_message': data.get('error_Message') or _('Remita: feedback error'),
                 'acquirer_reference': data.get('remita'),
                 'date_validate': fields.Datetime.now(),
+                'remita_txnid': data.get('RRR')
             }
         }
         vals = transaction_status.get(status, False)
