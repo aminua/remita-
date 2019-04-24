@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Template to modify goes here -->
+    <template id="ecommerce_debranding.product" inherit_id="website_sale.product">
+        <xpath expr="/t[1]/t[1]/div[1]/section[1]/div[2]/div[2]/p[1]" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+    </template>
+
+    <template id="ecommerce_debranding.cart" inherit_id="website_sale.cart">
+        <xpath expr="/t[1]/t[1]/div[1]/div[1]/div[1]/div[2]/ul[2]/li[2]" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+    </template>
+
+    <template id="ecommerce_debranding.checkout" inherit_id="website_sale.checkout">
+        <xpath expr="/t[1]/t[1]/div[1]/div[1]/div[1]/div[1]/t[1]/div[1]" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+        <xpath expr="/t[1]/t[1]/div[1]/div[1]/div[1]/div[1]/t[1]/div[2]/div[1]/div[1]/div[1]/form[1]/a[1]" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+        <xpath expr="//div[@class='col-sm-12 col-md-6 one_kanban']" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+    </template>
+
+    <template id="ecommerce_debranding.bill_to" inherit_id="website_sale.bill_to">
+        <xpath expr="/t/t/div" position="attributes">
+            <attribute name="class">hidden</attribute>
+        </xpath>
+    </template>
+
+</odoo>
