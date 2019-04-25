@@ -22,13 +22,15 @@ class AcquirerRemita(models.Model):
         if environment == 'prod':
             return {
                 'remita_get_rrr': "/get_rrr/remita",
-                'remita_pay_rrr': "https://remitademo.net/remita/ecomm/finalize.reg",
-                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
+                'remita_payment_init': "https://remita.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
+                'remita_pay_rrr': "https://remita.net/remita/ecomm/finalize.reg",
+                'remita_payment_status': "https://remita.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
             }
         else:
             return {
                 'remita_get_rrr': "/get_rrr/remita",
-                'remita_pay_rrr': "https://remita.net/remita/ecomm/finalize.reg",
+                'remita_payment_init': "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
+                'remita_pay_rrr': "https://remitademo.net/remita/ecomm/finalize.reg",
                 'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
             }
 
@@ -72,8 +74,10 @@ class AcquirerRemita(models.Model):
             'merchant_id': acquirer.merchant_id,
             'service_type_id': acquirer.service_type_id,
             'total_amount': '%d' % int(float_round(values['amount'], 2)),
-            'response_url': '%s' % urlparse.urljoin(base_url, '/get_rrr/remita'),
+            'response_url': '%s' % urlparse.urljoin(base_url, '/payment/remita/return'),
             'api_key': acquirer.api_key,
+            'remita_init_url': self.remita_get_init_url() or "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
+            'remita_pay_url': self.remita_get_payment_url() or "https://remitademo.net/remita/ecomm/finalize.reg"
         }
         shasign = self._remita_generate_digital_sign(acquirer, 'in', remita_values)
         remita_values['SHASIGN'] = shasign
@@ -83,7 +87,17 @@ class AcquirerRemita(models.Model):
     def remita_get_form_action_url(self):
         acquirer = self
         return self._get_remita_urls(acquirer.environment)['remita_get_rrr']
-   
+
+    def remita_get_init_url(self):
+        acquirer = self
+        return self._get_remita_urls(acquirer.environment)['remita_payment_init']
+
+    def remita_get_payment_url(self):
+        return self._get_remita_urls(self.environment)['remita_pay_rrr']
+
+    def remita_get_status_url(self):
+        return self._get_remita_urls(self.environment)['remita_payment_status']
+
 
 class TxRemita(models.Model):
     _inherit = 'payment.transaction'
@@ -159,7 +173,7 @@ class TxRemita(models.Model):
         return self.write(vals)
 
     @api.multi
-    def _get_transaction_status(self, data):
+    def _get_transaction_status(self, data, acquirer=None):
 
         """Return the transaction status for OrderId or RRR returned from Remita payment page.
 
@@ -170,10 +184,15 @@ class TxRemita(models.Model):
         """
         rrr = str(data.get('RRR'))
         # TDE: Get params from the configuration
-        merchantId = "2547916"
-        apiKey = "1946"
+        acquirer = self.env['payment.acquirer'].search([('provider', '=', str(acquirer))], limit=1)
+        merchantId = acquirer.merchant_id
+        apiKey = acquirer.api_key
+        method_get_status = '%_get_status_url' % acquirer.provider
+        # -----------------------------------------------------------------
         hash_str = hashlib.sha512(rrr + apiKey + merchantId).hexdigest()
-        get_status_url = "https://remitademo.net/remita/ecomm/%s/%s/%s/status.reg" % (merchantId, rrr, hash_str)
+        get_status_url = method_get_status()
+        # get_status_url = "https://remitademo.net/remita/ecomm/%s/%s/%s/status.reg" % (merchantId, rrr, hash_str)
+        get_status_url = get_status_url % (merchantId, rrr, hash_str)
         headers = {
             'Content-Type': 'application/json',
             'Authorization': "remitaConsumerKey=" + merchantId + ",remitaConsumerToken=" + hash_str

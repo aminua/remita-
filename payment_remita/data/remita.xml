@@ -12,9 +12,9 @@
                 <![CDATA[
                 <p>You will be redirected to the Remita website after clicking on the payment button.</p>]]>
             </field>
-            <field name="merchantId">2547916</field>
-            <field name="serviceTypeId">4430731</field>
-            <field name="apikey">1946</field>
+            <field name="merchant_id">2547916</field>
+            <field name="service_type_id">4430731</field>
+            <field name="api_key">1946</field>
         </record>
 
     </data>

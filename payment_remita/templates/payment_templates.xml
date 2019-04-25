@@ -14,14 +14,14 @@
                             <form id="formRemitaPay" t-att-action="form_values.get('form_action')" method="post" style="padding: 10px auto;">
                                 <div class="col-xs-4">
                                     <label>RRR</label>
-                                    <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" />
+                                    <input type="text" name="rrr" t-att-value="form_values.get('rrr') or ''" readonly="1" style="border: none;"/>
                                     <input type="hidden" name="responseurl" t-att-value="form_values.get('response_url') or ''" />
                                     <input type="hidden" name="merchantId" t-att-value="form_values.get('merchant_id')" />
                                     <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                                     <br/>
                                     <t t-if="'not error'">
-                                        <div class="text-right">
+                                        <div class="text-left">
                                               <input type="submit" value="Pay Via Remita" class="text-right"/>
                                         </div>
                                     </t>

@@ -84,15 +84,15 @@ class RemitaPayment(http.Controller):
         form_values, error = {}, {'error_message': []}
         if post:
             payload = {
-                "serviceTypeId": post.get('serviceTypeId'),
-                "amount": post.get("totalAmount"),
-                "orderId": post.get("orderId"),
-                "payerName": post.get("payerName"),
-                "payerEmail": post.get("payerEmail"),
-                "payerPhone": post.get("payerPhone"),
-                "description": "Payment for Donation"
+                "serviceTypeId": str(post.get('serviceTypeId')),
+                "amount": str(post.get("totalAmount")),
+                "orderId": str(post.get("orderId")),
+                "payerName": str(post.get("payerName")),
+                "payerEmail": str(post.get("payerEmail")),
+                "payerPhone": str(post.get("payerPhone")),
+                "description": str(post.get("orderId"))
             }
-            url = 'https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit'
+            url = str(post.get('remita_init_url'))
             hash_string = post.get('merchantId') + post.get('serviceTypeId') + post.get('orderId') + post.get('totalAmount') + post.get('apiKey')
             api_hash = hashlib.sha512(hash_string).hexdigest()
             headers = {
@@ -108,32 +108,16 @@ class RemitaPayment(http.Controller):
                     response = json.loads(response_json)
 
                     if response.get('statuscode') and response.get('statuscode') == '025':
-                        """formaction = "https://remitademo.net/remita/ecomm/finalize.reg"
-                        name = "merchantId"
-                        name = "hash"
-                        name = "rrr"
-                        name = "responseurl"
-                        """
                         rrr = response.get('RRR')
                         hash_string = post.get('merchantId') + rrr + post.get('apiKey')
                         api_hash = hashlib.sha512(hash_string).hexdigest()
                         form_values.update({
-                            'form_action': "https://remitademo.net/remita/ecomm/finalize.reg",  # Get the form action from the acquirer config.
-                            'merchant_id': post.get('merchantId'),  # get the merchant Id from the post object above
+                            'form_action': str(post.get('remita_pay_url')),  # Get the form action from the acquirer config.
+                            'merchant_id': str(post.get('merchantId')),  # get the merchant Id from the post object above
                             'hash': api_hash,  # use the api hash generated above
-                            'rrr': response.get('RRR'),  # get RRR from the response from the api endpoint
-                            'response_url': "http://localhost:8069/payment/remita/return"  # get the response url
+                            'rrr': str(response.get('RRR')),  # get RRR from the response from the api endpoint
+                            'response_url': str(post.get('responseurl'))  # get the response url
                         })
-
-                        # -------------------------------------------------
-                        # payload = {
-                        #     'rrr': form_values['rrr'],
-                        #     'responseurl': form_values["response_url"],
-                        #     'merchantId': ["merchant_id"],
-                        #     'hash': form_values['hash']
-                        # }
-                        # url = "https://remitademo.net/remita/onepage/api/v1/payment.spa"
-                        # res = requests.post(url=url, data=payload, allow_redirects=True)
                 else:
                     response = response.json()
                     error['error_message'].append(response.get('status') + ": " + response.get('statusMessage'))
@@ -154,7 +138,7 @@ class RemitaPayment(http.Controller):
         # ---------------------------------------------------------------------------------
         post = dict(post)
 
-        data = request.env['payment.transaction']._get_transaction_status(post)
+        data = request.env['payment.transaction']._get_transaction_status(post, acquirer='remita')
 
         request.env['payment.transaction'].sudo().form_feedback(data, 'remita')
         return werkzeug.utils.redirect('/shop/payment/validate')
