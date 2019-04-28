@@ -7,7 +7,7 @@ import pprint
 import werkzeug
 import hashlib
 import requests
-
+from urllib import urlencode
 from odoo import _
 from odoo.http import request
 from odoo.addons.website_sale.controllers.main import WebsiteSale
@@ -106,34 +106,34 @@ class RemitaPayment(http.Controller):
                 except Exception:
                     response_json = response.content.split("(", 1)[1].strip(")")  # convert to json
                     response = json.loads(response_json)
-
                     if response.get('statuscode') and response.get('statuscode') == '025':
                         rrr = response.get('RRR')
                         hash_string = post.get('merchantId') + rrr + post.get('apiKey')
                         api_hash = hashlib.sha512(hash_string).hexdigest()
-                        form_values.update({
-                            'form_action': str(post.get('remita_pay_url')),  # Get the form action from the acquirer config.
-                            'merchant_id': str(post.get('merchantId')),  # get the merchant Id from the post object above
-                            'hash': api_hash,  # use the api hash generated above
-                            'rrr': str(response.get('RRR')),  # get RRR from the response from the api endpoint
-                            'response_url': str(post.get('responseurl'))  # get the response url
-                        })
+                        form_action = str(post.get('remita_pay_url'))
+                        merchant_id = str(post.get('merchantId'))
+                        rrr = str(response.get('RRR'))
+                        response_url = str(post.get('responseurl'))
+                        return request.redirect('/pay_rrr/remita?form_action=%s&merchant_id=%s&hash=%s&rrr=%s&response_url=%s' %
+                                                (form_action, merchant_id, api_hash, rrr, response_url))
                 else:
                     response = response.json()
                     error['error_message'].append(response.get('status') + ": " + response.get('statusMessage'))
+        # TDE: Re-write this part of the code to catch any error that may occur.
         return request.render('payment_remita.pay_rrr', dict(form_values=form_values, error=error))  # render the form for rrr payment
 
     # Pay RRR
-    @http.route('/pay_rrr/remita', type='http', auth='public', csrf=False)
+    @http.route('/pay_rrr/remita', type='http', auth='public', csrf=False, website=True)
     def pay_rrr(self, **post):
-        values = {}
-        if post:
-            values['form_action'] = post.get('form_action')
-            values['merchant_id'] = post.get('merchant_id')
-            values['form_action'] = post.get('hash')
-            values['form_action'] = post.get('rrr')
-            values['form_action'] = post.get('response_url')
-        return request.render('payment_remita.pay_rrr', values)
+        if request.httprequest.method == "GET":
+            values = {}
+            if post:
+                values['form_action'] = post.get('form_action')
+                values['merchant_id'] = post.get('merchant_id')
+                values['hash'] = post.get('hash')
+                values['rrr'] = post.get('rrr')
+                values['response_url'] = post.get('response_url')
+            return request.render('payment_remita.pay_rrr', dict(form_values=values))
 
     # Pay with RRR using this controller
     @http.route(['/payment/remita/return'], type='http', auth='public', csrf=False)

@@ -8,9 +8,9 @@
                 <div class="oe_structure">
                     <div class="container">
                         <div style="margin: 10px;">
-                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
-                                <h4 class="text-danger" t-esc="err" />
-                            </t>
+<!--                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">-->
+<!--                                <h4 class="text-danger" t-esc="err" />-->
+<!--                            </t>-->
                             <form id="formRemitaPay" t-att-action="form_values.get('form_action')" method="post" style="padding: 10px auto;">
                                 <div class="col-xs-4">
                                     <label>RRR</label>
