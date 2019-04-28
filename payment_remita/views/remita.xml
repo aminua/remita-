@@ -8,10 +8,12 @@
                 <input type="hidden" name="serviceTypeId" t-att-value="service_type_id"/>
                 <input type="hidden" name="totalAmount" t-att-value="total_amount or '0.0'"/>
                 <input type='hidden' name='responseurl' t-att-value="response_url"/>
-                <input type="hidden" name="orderId" t-att-value="txn_ref"/>
+                <input type="text" name="orderId" t-att-value="txn_ref"/>
                 <input type="hidden" name="payerName" t-att-value="partner_name"/>
                 <input type="hidden" name="payerEmail" t-att-value="partner_email"/>
                 <input type="hidden" name="payerPhone" t-att-value="partner_phone"/>
+                <input type="hidden" name="remita_init_url" t-att-value="remita_init_url"/>
+                <input type="hidden" name="remita_pay_url" t-att-value="remita_pay_url"/>
                 <input type="hidden" name="hash" t-att-value="SHASIGN"/>
                 <input type="hidden" name="apiKey" t-att-value="api_key"/>
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
