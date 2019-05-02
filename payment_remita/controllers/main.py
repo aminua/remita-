@@ -49,6 +49,7 @@ class WebsiteSale(WebsiteSale):
         values = {
             'website_sale_order': order
         }
+
         values['errors'] = SaleOrder._get_errors(order)
         values.update(SaleOrder._get_website_data(order))
         if not values['errors']:
