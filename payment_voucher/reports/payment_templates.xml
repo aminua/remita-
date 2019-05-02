@@ -125,7 +125,7 @@
 				<!-- Payee's Details Row -->
 				<div class="row">
 					<div>
-						<div class="col-xs-3">Payee</div><div class="col-xs-7"><u>Name of the payee</u></div>
+						<div class="col-xs-3">Payee</div><div class="col-xs-7"><u t-field="o.partner_id"/></div>
 					</div>
 					<div>
 						<div class="col-xs-3">Address</div><div class="col-xs-7"><u>Address of the payee</u></div>
@@ -174,7 +174,7 @@
 							<td colspan="5">
 								Payable at __________________________<br/><br/>
 								Signature ___________________________<br/><br/>
-								Name in Block Letters _______________<br/><br/>
+								Name in Block Letters <u style="text-transform: uppercase;" t-field="user.name"/><br/><br/>
 								Station ____________ Date ___________<br/><br/>
 								Paying Officers______________________<br/><br/>
 								Signature____________________________<br/><br/>
@@ -254,7 +254,7 @@
 
 		<report id="report_voucher_supplier"
 				string="Payment Voucher"
-				model="account.payment"
+				model="account.voucher"
 				report_type="qweb-pdf"
 				name="payment_voucher.voucher_report_account"
 				file="payment_voucher.voucher_report_account"
