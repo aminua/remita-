@@ -24,14 +24,14 @@ class AcquirerRemita(models.Model):
                 'remita_get_rrr': "/get_rrr/remita",
                 'remita_payment_init': "https://remita.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
                 'remita_pay_rrr': "https://remita.net/remita/ecomm/finalize.reg",
-                'remita_payment_status': "https://remita.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
+                'remita_payment_status': "https://remita.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/status.reg",
             }
         else:
             return {
                 'remita_get_rrr': "/get_rrr/remita",
                 'remita_payment_init': "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
                 'remita_pay_rrr': "https://remitademo.net/remita/ecomm/finalize.reg",
-                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/orderstatus.reg",
+                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{rrr}/{hash}/status.reg",
             }
 
     provider = fields.Selection(selection_add=[('remita', "Remita")])
@@ -183,16 +183,16 @@ class TxRemita(models.Model):
 
         """
         rrr = str(data.get('RRR'))
-        # TDE: Get params from the configuration
         acquirer = self.env['payment.acquirer'].search([('provider', '=', str(acquirer))], limit=1)
-        merchantId = acquirer.merchant_id
-        apiKey = acquirer.api_key
-        method_get_status = '%_get_status_url' % acquirer.provider
-        # -----------------------------------------------------------------
+        merchantId = acquirer.merchant_id if isinstance(acquirer.merchant_id, str) else str(acquirer.merchant_id)
+        apiKey = acquirer.api_key if isinstance(acquirer.api_key, str) else str(acquirer.api_key)
+        method_get_status = '%s_get_status_url' % acquirer.provider
         hash_str = hashlib.sha512(rrr + apiKey + merchantId).hexdigest()
-        get_status_url = method_get_status()
-        # get_status_url = "https://remitademo.net/remita/ecomm/%s/%s/%s/status.reg" % (merchantId, rrr, hash_str)
-        get_status_url = get_status_url % (merchantId, rrr, hash_str)
+        get_status_url = ''
+        if hasattr(acquirer, method_get_status):
+            get_status_url = getattr(acquirer, method_get_status)()
+        get_status_url = str(get_status_url)
+        get_status_url = get_status_url.format(merchantId=merchantId, rrr=rrr, hash=hash_str)
         headers = {
             'Content-Type': 'application/json',
             'Authorization': "remitaConsumerKey=" + merchantId + ",remitaConsumerToken=" + hash_str

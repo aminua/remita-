@@ -19,7 +19,7 @@ class payment_voucher_report(models.AbstractModel):
         return amount
 
     @api.multi
-    def formated_amount(self, amount, currency_obj):
+    def formated_amount(self, amount, currency_obj=None):
         amount = formatLang(self.env, amount,
                             currency_obj=currency_obj if currency_obj else self.env.user.company_id.currency_id)
         return amount

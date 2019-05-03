@@ -146,12 +146,12 @@
 						</thead>
 						<tbody>
 							<t t-set="nums" t-value="[1, 2, 3, 4, 5]"/>
-							<t t-foreach="nums" t-as="num">
+							<t t-foreach="o.line_ids" t-as="l">
 								<tr>
-									<td class="col-xs-1">11/12/2019</td>
-									<td class="col-xs-8">Item <span><t t-esc="num"/></span></td>
-									<td class="col-xs-1">100/piece</td>
-									<td class="col-xs-1">100</td>
+									<td class="col-xs-1"><span t-field="o.create_date"/></td>
+									<td class="col-xs-8"><span t-field="l.name"/></td>
+									<td class="col-xs-1"><span t-field="l.price_unit" /></td>
+									<td class="col-xs-1"><span t-field="l.price_subtotal"/> </td>
 									<td class="col-xs-1">00</td>
 								</tr>
 							</t>
@@ -160,8 +160,8 @@
 							<tr>
 								<th style="margin-top:0;"></th>
 								<th>Checked and Insert Amount in Words<br/>Passed for</th>
-								<th>Total =N=</th>
-								<th></th>
+								<th>Total</th>
+								<th><span t-field="o.amount"/></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -171,7 +171,7 @@
 				<div class="row">
 					<table style="border:0px">
 						<tr>
-							<td colspan="5">
+							<td colspan="6">
 								Payable at __________________________<br/><br/>
 								Signature ___________________________<br/><br/>
 								Name in Block Letters <u style="text-transform: uppercase;" t-field="user.name"/><br/><br/>
@@ -180,7 +180,7 @@
 								Signature____________________________<br/><br/>
 								Autly, AIE No. etc.__________________
 							</td>
-							<td colspan="7">
+							<td colspan="6">
 								<h5 style="text-transform: uppercase; text-align: center;">certificate</h5>
 								<div>
 									I certify the amount above is correct and incurred under the authority quoted;

@@ -6,7 +6,7 @@ class account_voucher(models.Model):
     _inherit = "account.voucher"
 
     check_amount = fields.Char(string="Amount in Words", compute="_get_amount_in_words")
-    amount = fields.Float(string="Amount")
+    # amount = fields.Float(string="Amount")
 
     @api.onchange('amount')
     def _onchange_amount(self):
