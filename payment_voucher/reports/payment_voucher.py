@@ -19,6 +19,7 @@ class payment_voucher_report(models.AbstractModel):
         return amount
 
     def get_lines(self, communication=''):
+        invoice = ''
         if communication:
             invoice = self.env['account.invoice'].search([('number', '=', communication)])
         if invoice:
@@ -31,10 +32,8 @@ class payment_voucher_report(models.AbstractModel):
                             currency_obj=currency_obj if currency_obj else self.env.user.company_id.currency_id)
         return amount
 
-    @api.multi
-    def remove_currency_formatting(self, amount=0.0):
-        if amount:
-            print("%%%%%%%%%%%%%%", amount)
+    def get_amount_in_words(self, o, amount):
+        return o.amt2words(amount)
 
     @api.model
     def render_html(self, docids, data=None):
@@ -49,6 +48,7 @@ class payment_voucher_report(models.AbstractModel):
             'formated_amount': self.formated_amount,
             'get_lines': self.get_lines,
             'remove_format': self.remove_currency_formatting,
+            'get_amount_in_words': self.get_amount_in_words,
         }
         return self.env['report'].render('payment_voucher.voucher_report_account', docargs)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

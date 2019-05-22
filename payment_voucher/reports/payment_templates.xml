@@ -39,7 +39,7 @@
 					<div scope="col" class="col-xs-4" style="border: 1px solid #eeee">
 						<span>For use in payment of Advances</span>
 						<span>Certified the Advance of </span>
-						<span>N _______________________</span>
+						<span t-field="o.amount"/>
 						<span>has been entered on TF 174 (A) (B) (C)</span>
 						<span>Deptal No. _______________</span>
 						<span>Signature</span>
@@ -83,8 +83,8 @@
 											<th class="col-xs-7">Amount</th>
 										</tr>
 										<tr>
-											<td>22/04/19</td>
-											<td>230000</td>
+											<td><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></td>
+											<td><span t-field="o.amount"/></td>
 										</tr>
 									</table>
 								</div>
@@ -153,8 +153,8 @@
 								<tr>
 									<td class="col-xs-1"><span t-field="o.create_date"/></td>
 									<td class="col-xs-8"><span t-field="l.name"/></td>
-									<td class="col-xs-1"><span t-field="l.price_unit" /></td>
-									<td class="col-xs-1"><span t-field="l.price_subtotal"/> </td>
+									<td class="col-xs-1"><span><t t-esc="l.price_unit"/></span></td>
+									<td class="col-xs-1"><span><t t-esc="l.price_subtotal"/></span></td>
 									<td class="col-xs-1"></td>
 								</tr>
 							</t>
@@ -164,7 +164,7 @@
 								<th style="margin-top:0;"></th>
 								<th>Checked and Insert Amount in Words<br/>Passed for</th>
 								<th>Total</th>
-								<th><span t-field="o.amount"/></th>
+								<th><span><t t-esc="o.amount"/></span></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -191,14 +191,14 @@
 									according to regulations / contracts is fair and reasonable.
 								</div>
 								<br/>
-								<span>That the amount of ............. Naira ............. Kobo may be paid under the Classification quoted.</span>
+								<span>That the amount of <span><b><t t-esc="get_amount_in_words(o, o.amount)"/></b></span> may be paid under the Classification quoted.</span>
 								<h6 style="text-align:right">________________________</h6>
 								<div class="row">
 									<div class="col-xs-3 col-xs-offset-9">Signature</div>
 								</div>
-								<div>
-									<div style="margin-left: 0px;" class="col-xs-6">Place <u>Abuja</u></div>
-									<div style="margin-left:0px;" class="col-xs-6">Date <u>
+								<div style="text-align:left;">
+									<div class="col-xs-6">Place <u>Abuja</u></div>
+									<div class="col-xs-6">Date <u>
 										<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
 										</u></div>
 								</div>
@@ -214,8 +214,7 @@
 				<br/>
 				<!-- Payment text -->
 				<div class="row">
-					Received from the Federal Government of nigeria the sum of _______________ Naira ____________
-					Kobo in full settlement of the account.
+					Received from the Federal Government of Nigeria the sum of <span><b><t t-esc="get_amount_in_words(o, o.amount)"/></b></span> in full settlement of the account.
 				</div>
 				<br/>
 				<div class="row">
@@ -224,9 +223,9 @@
 				</div>
 				<br/>
 				<div class="row">
-					<div class="col-xs-4">=N=_______________K</div>
-					<div class="col-xs-4">Date _____________</div>
-					<div class="col-xs-4">Place ____________</div>
+					<div class="col-xs-4"><span t-field="o.amount"/></div>
+					<div class="col-xs-4">Date <u><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></u></div>
+					<div class="col-xs-4">Place <u>Abuja</u></div>
 				</div>
 			</div>
 		</template>
