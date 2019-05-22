@@ -128,11 +128,15 @@
 						<div class="col-xs-3">Payee</div><div class="col-xs-7"><u t-field="o.partner_id"/></div>
 					</div>
 					<div>
-						<div class="col-xs-3">Address</div><div class="col-xs-7"><u>Address of the payee</u></div>
+						<div class="col-xs-3">Address</div>
+						<div class="col-xs-7">
+							<u>
+								<span t-field="o.partner_id.street"/> <span t-field="o.partner_id.city"/> <span t-field="o.partner_id.country_id"/>
+							</u>
+						</div>
 					</div>
 				</div>
 				<br/>
-
 				<div class="row">
 					<table style="padding:0;margin-top:0;margin-bottom:0;">
 						<thead>
@@ -145,14 +149,13 @@
 							</tr>
 						</thead>
 						<tbody>
-							<t t-set="nums" t-value="[1, 2, 3, 4, 5]"/>
-							<t t-foreach="o.line_ids" t-as="l">
+							<t t-foreach="get_lines(o.communication)" t-as="l">
 								<tr>
 									<td class="col-xs-1"><span t-field="o.create_date"/></td>
 									<td class="col-xs-8"><span t-field="l.name"/></td>
 									<td class="col-xs-1"><span t-field="l.price_unit" /></td>
 									<td class="col-xs-1"><span t-field="l.price_subtotal"/> </td>
-									<td class="col-xs-1">00</td>
+									<td class="col-xs-1"></td>
 								</tr>
 							</t>
 						</tbody>
@@ -169,18 +172,18 @@
 				</div>
 
 				<div class="row">
-					<table style="border:0px">
+					<table style="border:3px">
 						<tr>
-							<td colspan="6">
-								Payable at __________________________<br/><br/>
-								Signature ___________________________<br/><br/>
-								Name in Block Letters <u style="text-transform: uppercase;" t-field="user.name"/><br/><br/>
-								Station ____________ Date ___________<br/><br/>
-								Paying Officers______________________<br/><br/>
-								Signature____________________________<br/><br/>
-								Autly, AIE No. etc.__________________
+							<td class="col-xs-6" style="text-align:left">
+								Payable at  _________________<br/><br/>
+								Signature   __________________<br/><br/>
+								Name  <u style="text-transform: uppercase;" t-field="user.name"/><br/><br/>
+								Station  <u><span>Abuja</span></u> Date <u><span t-field="o.create_date"/></u><br/><br/>
+								Paying Officers  ________________<br/><br/>
+								Signature  ____________________________<br/><br/>
+								Autly, AIE No. etc.  __________________
 							</td>
-							<td colspan="6">
+							<td class="col-xs-6" style="text-align:left">
 								<h5 style="text-transform: uppercase; text-align: center;">certificate</h5>
 								<div>
 									I certify the amount above is correct and incurred under the authority quoted;
@@ -194,10 +197,13 @@
 									<div class="col-xs-3 col-xs-offset-9">Signature</div>
 								</div>
 								<div>
-									<div style="margin-left: 0px;" class="col-xs-6">Place <u>Date here</u></div>
-									<div style="margin-left:0px;" class="col-xs-6">Date</div>
+									<div style="margin-left: 0px;" class="col-xs-6">Place <u>Abuja</u></div>
+									<div style="margin-left:0px;" class="col-xs-6">Date <u>
+										<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+										</u></div>
 								</div>
-								<div style="margin-left:0px;">
+								<br/>
+								<div>
 									Designation _______________
 								</div>
 							</td>
@@ -254,7 +260,7 @@
 
 		<report id="report_voucher_supplier"
 				string="Payment Voucher"
-				model="account.voucher"
+				model="account.payment"
 				report_type="qweb-pdf"
 				name="payment_voucher.voucher_report_account"
 				file="payment_voucher.voucher_report_account"
