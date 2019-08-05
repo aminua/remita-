@@ -4,6 +4,11 @@ from num2words import num2words
 # TDE: write conversion to words in function outside the classes
 
 
+def capitalize_word(words):
+    if words is not False or None:
+        return ' '.join(word.capitalize() for word in words.split(' '))
+
+
 class account_voucher(models.Model):
     _inherit = "account.voucher"
 
@@ -19,17 +24,23 @@ class account_voucher(models.Model):
                                                'res.currency.subunit', [], limit=1)).name)
 
     def amt2words(self, amount, currency='dollars', change='cents', precision=2):
-        change_amt = (amount - int(amount)) * pow(10, precision)
+        change_amt = self.get_change_amount(amount, precision)
         words = '{main_amt} {main_word}'.format(
-            main_amt=num2words(int(amount)),
-            main_word=currency,
+            main_amt=capitalize_word(num2words(int(amount))),
+            main_word=capitalize_word(currency),
         )
         if change_amt > 0:
             words += ' and {change_amt} {change_word}'.format(
-                change_amt=num2words(int(change_amt)),
-                change_word=change,
+                change_amt=capitalize_word(num2words(int(change_amt))),
+                change_word=capitalize_word(change),
             )
         return words
+
+    def get_change_amount(self, amount, precision=2):
+        return int(round((amount - int(amount)) * pow(10, precision)))
+
+    def get_main_amount(self, amount):
+        return int(amount)
 
     @api.one
     @api.depends('amount')
@@ -60,17 +71,23 @@ class AccountPayment(models.Model):
                                                'res.currency.subunit', [], limit=1)).name)
 
     def amt2words(self, amount, currency='dollars', change='cents', precision=2):
-        change_amt = (amount - int(amount)) * pow(10, precision)
+        change_amt = self.get_change_amount(amount, precision)
         words = '{main_amt} {main_word}'.format(
-            main_amt=num2words(int(amount)),
-            main_word=currency,
+            main_amt=capitalize_word(num2words(int(amount))),
+            main_word=capitalize_word(currency),
         )
         if change_amt > 0:
             words += ' and {change_amt} {change_word}'.format(
-                change_amt=num2words(int(change_amt)),
-                change_word=change,
+                change_amt=capitalize_word(num2words(int(change_amt))),
+                change_word=capitalize_word(change),
             )
         return words
+
+    def get_change_amount(self, amount, precision=2):
+        return int(round((amount - int(amount)) * pow(10, precision)))
+
+    def get_main_amount(self, amount):
+        return int(amount)
 
     @api.one
     @api.depends('amount')

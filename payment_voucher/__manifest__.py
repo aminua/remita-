@@ -13,7 +13,7 @@ Features:
     'installable': True,
     'auto_install': False,
     'depends': [
-        'account_accountant',
+        'account_voucher',
     ],
     'data': [
         'reports/payment_templates.xml',

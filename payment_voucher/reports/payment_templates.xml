@@ -6,7 +6,7 @@
 				<style>
 					table th, td{
 						text-align: center;
-					    border: 2px solid black !important;
+					    border: 1px solid black !important;
 					    border-collapse: collapse;
 					}
 					div[scope=col] {
@@ -155,7 +155,7 @@
 									<td class="col-xs-8"><span t-field="l.name"/></td>
 									<td class="col-xs-1"><span><t t-esc="l.price_unit"/></span></td>
 									<td class="col-xs-1"><span><t t-esc="l.price_subtotal"/></span></td>
-									<td class="col-xs-1"></td>
+									<td class="col-xs-1"><span><t t-esc="get_change_amount(o, l.price_subtotal)"/></span></td>
 								</tr>
 							</t>
 						</tbody>
@@ -164,8 +164,8 @@
 								<th style="margin-top:0;"></th>
 								<th>Checked and Insert Amount in Words<br/>Passed for</th>
 								<th>Total</th>
-								<th><span><t t-esc="o.amount"/></span></th>
-								<th></th>
+								<th><span><t t-esc="get_main_amount(o, o.amount)"/></span></th>
+								<th><span><t t-esc="get_change_amount(o, o.amount)"/></span></th>
 							</tr>
 						</thead>
 					</table>
@@ -183,7 +183,7 @@
 								Signature  ____________________________<br/><br/>
 								Autly, AIE No. etc.  __________________
 							</td>
-							<td class="col-xs-6" style="text-align:left">
+							<td class="col-xs-6" style="text-align:left;border:0 !important">
 								<h5 style="text-transform: uppercase; text-align: center;">certificate</h5>
 								<div>
 									I certify the amount above is correct and incurred under the authority quoted;
@@ -223,7 +223,7 @@
 				</div>
 				<br/>
 				<div class="row">
-					<div class="col-xs-4"><span t-field="o.amount"/></div>
+					<div class="col-xs-4"><u><span t-field="o.amount"/></u></div>
 					<div class="col-xs-4">Date <u><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></u></div>
 					<div class="col-xs-4">Place <u>Abuja</u></div>
 				</div>
