@@ -197,14 +197,13 @@
 									<div class="col-xs-3 col-xs-offset-9">Signature</div>
 								</div>
 								<div style="text-align:left;">
-									<div class="col-xs-6">Place <u>Abuja</u></div>
-									<div class="col-xs-6">Date <u>
+									<div class="col-xs-4">Place <u>Abuja</u></div>
+									<div class="col-xs-4">Date <u>
 										<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
-										</u></div>
-								</div>
-								<br/>
-								<div>
-									Designation _______________
+										</u>
+									</div>
+									<div class="col-xs-4">Designation <u></u>
+									</div>
 								</div>
 							</td>
 						</tr>
