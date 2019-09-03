@@ -7,7 +7,7 @@
     'version': '1.0',
     'description': """Remita Payment Acquirer""",
     'author': 'MgB Computers',
-    'depends': ['website', 'payment'],
+    'depends': ['website', 'payment', 'website_payment'],
     'data': [
         'views/remita.xml',
         'views/payment_acquirer.xml',
