@@ -7,11 +7,9 @@ import pprint
 import werkzeug
 import hashlib
 import requests
-from urllib import urlencode
 from odoo import _
 from odoo.http import request
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-
 import odoo.http as http
 
 
@@ -154,38 +152,3 @@ class RemitaPayment(http.Controller):
 
         request.env['payment.transaction'].sudo().form_feedback(data, 'remita')
         return werkzeug.utils.redirect('/shop/payment/validate')
-
-    @http.route('/payment/remita/bank', type="http", methods=["POST"], auth="public", csrf=False)
-    def bank_payment_feedback(self, **kwargs):
-        print("I'm here now...", kwargs, type(kwargs))
-        try:
-            rrr = kwargs.get("RRR")
-        except KeyError:
-            pass
-        kwargs['rrr'] = rrr
-        data = request.env['payment.transaction']._get_transaction_status(kwargs, acquirer='remita')
-        if data.get('status') == "success":
-            return "OK"
-        return "not ok"
-        # try:
-        #     rrr = kwargs.get("rrr")
-        #     channel = kwargs.get("BRANCH")
-        #     amount = kwargs.get("amount")
-        #     transactiondate = kwargs.get("date")
-        #     debitdate = kwargs.get("date")
-        #     bank = "011"
-        #     branch = "011152387"
-        #     serviceTypeId = kwargs.get("serviceTypeId")
-        #     dateRequested = kwargs.get("date")
-        #     orderRef = kwargs.get("orderRef")
-        #     payerName = kwargs.get("payerName")
-        #     payerPhoneNumber = kwargs.get("payerPhoneNumber")
-        #     payerEmail = kwargs.get("payerEmail")
-        #
-        # except KeyError:
-        #     pass
-        # except ValueError:
-        #     pass
-        # self.env['payment.transaction'].create({
-        #     "name":
-        # })

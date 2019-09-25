@@ -117,14 +117,16 @@ class TxRemita(models.Model):
 
     @api.model
     def _remita_form_get_tx_from_data(self, data):
-        data_ref = data.get('orderID')
-        data_ref = data_ref.split("@")[0]
+        try:
+            data_ref = data.get('orderID')
+            data_ref = data_ref.split("@")[0]
+        except AttributeError:
+            data_ref = data.get('RRR')
         reference = data_ref
         if not reference:
             error_msg = 'Remita: received data with missing reference (%s)' % reference
             _logger.error(error_msg)
             raise ValidationError(error_msg)
-
         tx_ids = self.env['payment.transaction'].search([('reference', '=', reference)])
         if not tx_ids or len(tx_ids) > 1:
             error_msg = 'Remita: received data for reference %s' % reference
@@ -133,7 +135,7 @@ class TxRemita(models.Model):
             else:
                 error_msg += '; multiple order found'
             _logger.error(error_msg)
-            raise ValidationError(error_msg)
+            # raise ValidationError(error_msg)
         return tx_ids
 
     @api.multi

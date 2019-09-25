@@ -20,11 +20,16 @@
                                     <input type="hidden" name="hash" t-att-value="form_values.get('hash') or ''" />
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                                     <br/>
-                                    <t t-if="'not error'">
-                                        <div class="text-left">
-                                              <input type="submit" value="Pay Via Remita" class="text-right"/>
+                                    <div class="row">
+                                        <t t-if="'not error' and form_values.get('rrr')">
+                                            <div class="text-left">
+                                                  <input type="submit" value="Pay Via Remita" class="text-right"/>
+                                            </div>
+                                        </t>
+                                        <div>
+                                            <button><a href="/shop/payment">Back</a></button>
                                         </div>
-                                    </t>
+                                    </div>
                                 </div>
                             </form>
                         </div>
