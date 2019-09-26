@@ -13,6 +13,7 @@ class BankPaymentNotification(http.Controller):
         }
         RRR = kwargs.get('rrr')
         data = request.env['payment.transaction']._get_transaction_status(dict(RRR=RRR), acquirer='remita')
+        print("^^^^^", data)
         request.env['payment.transaction'].sudo().form_feedback(data, 'remita')
         if data.get('status') == "success":
             # create tnx record or verify this is automatically created
