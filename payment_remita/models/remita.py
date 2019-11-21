@@ -169,7 +169,6 @@ class TxRemita(models.Model):
             }
         }
         vals = transaction_status.get(status, False)
-
         if not vals:
             vals = transaction_status['error']
             _logger.info(vals['state_message'])
@@ -222,5 +221,4 @@ class TxRemita(models.Model):
                 'status': 'pending',
                 'remita': 'Remita'
             })
-
         return data

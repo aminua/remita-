@@ -76,7 +76,7 @@ class WebsiteSale(WebsiteSale):
 
 
 class RemitaPayment(http.Controller):
-    # Pay with RRR using this controller
+    # Obtain RRR
     @http.route('/get_rrr/remita', type="http", auth='public', website=True)
     def get_rrr(self, **post):
         form_values, error = {}, {'error_message': []}
@@ -120,7 +120,7 @@ class RemitaPayment(http.Controller):
         # TDE: Re-write this part of the code to catch any error that may occur.
         return request.render('payment_remita.pay_rrr', dict(form_values=form_values, error=error))  # render the form for rrr payment
 
-    # Pay RRR
+    # Pay with RRR using this controller
     @http.route('/pay_rrr/remita', type='http', auth='public', csrf=False, website=True)
     def pay_rrr(self, **post):
         if request.httprequest.method == "GET":
@@ -133,7 +133,7 @@ class RemitaPayment(http.Controller):
                 values['response_url'] = post.get('response_url')
             return request.render('payment_remita.pay_rrr', dict(form_values=values))
 
-    # Pay with RRR using this controller
+    # Receive Remita's feedback from here
     @http.route(['/payment/remita/return'], type='http', auth='public', csrf=False)
     def payment_feedback(self, **post):
 
