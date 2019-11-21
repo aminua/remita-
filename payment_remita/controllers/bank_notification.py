@@ -39,6 +39,7 @@ class BankPaymentNotification(http.Controller):
             response_dict['message'] = 'Ok'
 
         # TODO: reset the sales order on the website to clear the cart.
+        request.website.sale_reset()
         return request.make_response(data=json.dumps(response_dict), headers={
             'content-type': 'application/json; charset=UTF-8'
         }, cookies=None)
