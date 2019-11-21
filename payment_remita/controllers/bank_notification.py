@@ -18,6 +18,11 @@ class BankPaymentNotification(http.Controller):
         request.env['payment.transaction'].sudo().form_feedback(data, 'remita')
         payment_tx = request.env['payment.transaction'].search([('reference', '=', kwargs.get('orderRef'))])
 
+        sale_order = payment_tx.sale_order_id  # TODO: validate sales order if it is not auto-validated
+
+        if sale_order.state == 'draft':
+            sale_order.action_confirm()
+
         invoice = request.env['account.invoice'].sudo().search([('origin', '=', str(kwargs.get('orderRef')))])
 
         if not invoice.exists():  # if invoice doesnt exist create a new one
@@ -39,10 +44,7 @@ class BankPaymentNotification(http.Controller):
         }, cookies=None)
 
     @api.multi
-    def create_invoice(self, response_data):
-        payment_tx = request.env['payment.transaction'].sudo().search([('reference', '=', str(response_data.get('orderRef')))])
-        sale_order = payment_tx.sale_order_id  # TODO: validate sales order if it is not auto-validated
-
+    def create_invoice(self, payment_tx, response_data):
         invoice_id = request.env['account.invoice'].sudo().create({
             'journal_id': 1,
             'partner_id': payment_tx.sale_order_id.partner_id.id,  # get from sales order
