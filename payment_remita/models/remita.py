@@ -24,14 +24,14 @@ class AcquirerRemita(models.Model):
                 'remita_get_rrr': "/get_rrr/remita",
                 'remita_payment_init': "https://remita.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
                 'remita_pay_rrr': "https://remita.net/remita/ecomm/finalize.reg",
-                'remita_payment_status': "https://remita.net/remita/ecomm/{merchantId}/{OrderID}/{hash}/status.reg",
+                'remita_payment_status': "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/{merchantId}/{OrderID}/{hash}/status.reg",
             }
         else:
             return {
                 'remita_get_rrr': "/get_rrr/remita",
                 'remita_payment_init': "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit",
                 'remita_pay_rrr': "https://remitademo.net/remita/ecomm/finalize.reg",
-                'remita_payment_status': "https://remitademo.net/remita/ecomm/{merchantId}/{rrr}/{hash}/status.reg",
+                'remita_payment_status': "https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/{merchantId}/{rrr}/{hash}/status.reg",
             }
 
     provider = fields.Selection(selection_add=[('remita', "Remita")])

@@ -37,8 +37,6 @@ class website_account(website_account):
         # search the count to display, according to the pager data
         quotations = SaleOrder.search(
         	domain, limit=self._items_per_page, offset=pager['offset'])
-        print("&&&&&&&", domain)
-        print("$$$$$$$$", quotations)
         values.update({
         	'date': date_begin,
         	'quotations': quotations,
